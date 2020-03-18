@@ -423,6 +423,25 @@ void delete_BST(BST_Node *root)
 
 }
 
+void BST_updatefreq(BST_Node *root, double src_freq, double dst_freq)
+{
+	/* This functions traverses the tree and updates each root that has src_freq
+	 *as its frequency and replaces it with dst_freq 
+	*/
+	if (root == NULL)
+	{
+		return;
+	}									//traverse tree and update required frequncies
+	BST_updatefreq(root->left, src_freq, dst_freq);  
+	if(root->freq == src_freq)
+	{	
+		printf("freq updated from %f to %f\n", root->freq, dst_freq);
+		root->freq = dst_freq;	
+	}
+	BST_updatefreq(root->right,src_freq, dst_freq);
+}
+
+
 void BST_shiftFreq(BST_Node *root, char note_src[5], char note_dst[5])
 {
     /*
@@ -471,25 +490,35 @@ void BST_shiftFreq(BST_Node *root, char note_src[5], char note_dst[5])
 	
 	
 	
-	int i; double freq1;
+	int i;
+	int i1, i2;	
+	double dst_freq,src_freq;
 	for (i =0; i <=100; i++)
-	{
-		if (strcmp(note_names[i],note_src) ==0) 
+	{	
+		int cmp = (strcmp(note_names[i],note_src)) ;
+		if (cmp ==0) 
 		{	
-			freq1 =  note_freq[i];
+			i1 = i;											//finds the index of the note in the note names array
 			break;
 		}
+		else i1 = -1;
 	}	
-	double freq2;
 	for (int i =0; i <=100; i++)
-	{
-		if (strcmp(note_names[i],note_src) ==0) 
+	{	 
+		int cmp = (strcmp(note_names[i],note_dst)) ;	//finds the index of the note in the note names array
+		if (cmp ==0) 
 		{	
-			freq2 =  note_freq[i];
+			i2 = i;
 			break;
 		}
+		else i2 = -1;
 	}
-		
+	if (i1 >= 0)
+		src_freq = note_freq[i1];
+	if (i2>=0)
+		dst_freq = note_freq[i2];
+	BST_updatefreq( root,src_freq,dst_freq);
+	
 }
 
 /********************************************************************************************
